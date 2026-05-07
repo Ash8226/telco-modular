@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 147 80" role="img" aria-label="Singtel logo">
+  <rect width="147" height="80" fill="none"/>
+  <circle cx="35" cy="29" r="6" fill="#ff0028"/>
+  <circle cx="61" cy="13" r="9" fill="#ff0028"/>
+  <circle cx="85" cy="9" r="9" fill="#ff0028"/>
+  <circle cx="110" cy="11" r="10" fill="#ff0028"/>
+  <circle cx="134" cy="24" r="12" fill="#ff0028"/>
+  <text x="0" y="70"
+        fill="#191719"
+        font-family="Arial Black, Arial, Helvetica, sans-serif"
+        font-size="46"
+        font-weight="900"
+        letter-spacing="-4">Singtel</text>
+</svg>

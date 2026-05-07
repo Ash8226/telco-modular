@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wireframe - Singtel Modular Plan Builder</title>
+  <style>
+    :root {
+      --ink: #202124;
+      --muted: #666f7a;
+      --line: #aeb7c2;
+      --soft: #f3f5f7;
+      --paper: #ffffff;
+      --green: #31c77f;
+      --orange: #ff9b4a;
+      --blue: #2f5aa8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 30px 20px 44px;
+    }
+
+    .title {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+
+    .title-number {
+      width: 76px;
+      height: 76px;
+      background: var(--green);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 21px;
+      font-style: italic;
+      color: #222;
+    }
+
+    .guide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      margin: 18px 100px 26px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .guide h2 {
+      font-size: 12px;
+      margin: 0 0 7px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: underline;
+    }
+
+    .guide h3 {
+      margin: 0 0 5px;
+      font-size: 12px;
+    }
+
+    .guide ul {
+      margin: 0;
+      padding-left: 17px;
+    }
+
+    .step-label {
+      width: 144px;
+      height: 42px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      margin: 0 0 14px 42px;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 18px;
+      color: #111;
+    }
+
+    .step-one { background: #d8ccff; }
+    .step-two { background: var(--orange); }
+
+    .wire-screen {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .screen-card {
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .screen-card strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .screen-card p {
+      margin: 0 0 8px;
+    }
+
+    .screen-card ul {
+      margin: 0;
+      padding-left: 15px;
+    }
+
+    .desktop-wireframe {
+      border: 3px solid #222;
+      min-height: 650px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      margin: 0 42px 28px;
+    }
+
+    .wf-block {
+      border: 2px solid #222;
+      background: #166a83;
+      color: white;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      min-height: 72px;
+      padding: 12px;
+    }
+
+    .wf-hero {
+      background: #fff;
+      color: #111;
+      border: 2px solid #222;
+      display: grid;
+      grid-template-columns: 1.3fr .8fr;
+      min-height: 130px;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .wf-hero-red {
+      background:
+        radial-gradient(circle, rgba(255,255,255,.25) 0 2px, transparent 2.5px) 0 0 / 15px 15px,
+        #d91534;
+      color: white;
+      display: grid;
+      align-content: center;
+      padding: 18px;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.05;
+      clip-path: polygon(0 0, 88% 0, 73% 100%, 0% 100%);
+    }
+
+    .wf-context {
+      border: 1px solid var(--line);
+      background: #f9fafb;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      align-content: center;
+      font-size: 11px;
+    }
+
+    .wf-context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .mini-box {
+      border: 1px solid #c8d1dc;
+      background: white;
+      min-height: 38px;
+      padding: 7px;
+      font-weight: 700;
+    }
+
+    .wf-mira {
+      min-height: 92px;
+    }
+
+    .wf-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .wf-choice {
+      min-height: 190px;
+    }
+
+    .wf-builder {
+      min-height: 170px;
+    }
+
+    .wf-summary-row {
+      display: grid;
+      grid-template-columns: 1fr 250px;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .wf-summary {
+      min-height: 160px;
+      background: #f0f3f6;
+      color: #111;
+      border-color: #d8dee6;
+      font-size: 14px;
+      align-content: start;
+      justify-items: stretch;
+      padding: 10px;
+    }
+
+    .summary-inner {
+      border: 1px solid #c5ced8;
+      background: white;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-price {
+      border: 1px solid #f1adb7;
+      background: #fff5f6;
+      color: #d91534;
+      min-height: 56px;
+      display: grid;
+      align-content: center;
+      padding: 8px;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .summary-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #dbe2ea;
+      overflow: hidden;
+    }
+
+    .summary-bar span {
+      display: block;
+      width: 72%;
+      height: 100%;
+      background: #007f88;
+    }
+
+    .summary-button {
+      background: #f30b35;
+      color: white;
+      border-radius: 999px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+    }
+
+    .device-frames {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin: 0 42px;
+    }
+
+    .phone-frame {
+      border: 4px solid #333;
+      border-radius: 38px;
+      min-height: 430px;
+      padding: 30px 18px 18px;
+      position: relative;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .phone-frame:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 9px;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 18px;
+      border-radius: 0 0 14px 14px;
+      background: white;
+      border: 2px solid #333;
+      border-top: 0;
+    }
+
+    .mobile-block {
+      border: 1.5px solid #888;
+      background: #f5f5f5;
+      min-height: 42px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: #333;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .mobile-large { min-height: 105px; }
+    .mobile-medium { min-height: 74px; }
+    .mobile-button {
+      margin-top: auto;
+      justify-self: center;
+      background: var(--blue);
+      color: white;
+      width: 96px;
+      min-height: 28px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+    }
+
+    @media (max-width: 900px) {
+      .guide,
+      .wire-screen,
+      .device-frames {
+        grid-template-columns: 1fr;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .desktop-wireframe {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .wf-hero,
+      .wf-two-col,
+      .wf-summary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="title">
+      <div class="title-number">1</div>
+      <div>
+        <h1>Prototyping and Wireframing</h1>
+        <div class="subtitle">Wireframe for Singtel Smart Upgrade Builder</div>
+      </div>
+    </section>
+
+    <section class="guide">
+      <div>
+        <h2>Step wise guide on how to do wireframing</h2>
+        <h3>Step 1: Preparation</h3>
+        <ul>
+          <li>Identify the key screens needed to explain the Modular Plan Builder.</li>
+          <li>Define Praveen’s goal: choose plan modules, phone, and contract clearly.</li>
+          <li>Prioritise desktop, tablet, and mobile layouts for accessibility.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Step 2: Wireframing</h3>
+        <ul>
+          <li>Create screen blocks for the hero, Mira guide, module library, phone selection, plan builder, and cost summary.</li>
+          <li>Show how drag-and-drop modules move into the plan builder.</li>
+          <li>Place Monthly Cost Summary bottom-right on laptop, stacked on handheld screens.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="step-label step-one">Step 1</div>
+    <section class="wire-screen">
+      <div class="screen-card">
+        <strong>Screen: Smart Upgrade Builder landing</strong>
+        <p>As a user, I want to understand that I can build a plan that fits my needs.</p>
+        <p>This screen is impactful because it frames Praveen’s context before module selection.</p>
+        <ul>
+          <li>Header and Singtel brand</li>
+          <li>Hero: “Build a plan that fits Praveen”</li>
+          <li>Customer context summary</li>
+        </ul>
+      </div>
+      <div class="screen-card">
+        <strong>Screen: Mira guidance</strong>
+        <p>As a user, I want an assistant to guide my next best action.</p>
+        <p>This screen is impactful because it reduces plan-building uncertainty.</p>
+        <ul>
+          <li>Mira photo on left</li>
+          <li>Instructions and tips on right</li>
+          <li>Dynamic guidance as modules are added</li>
+        </ul>
+      </div>
+      <div class="screen-card">
+        <strong>Screen: Module and phone selection</strong>
+        <p>As a user, I want to choose only the plan parts I need.</p>
+        <p>This screen is impactful because it makes value and tradeoffs visible.</p>
+        <ul>
+          <li>Module Library</li>
+          <li>Phone Selection with specs</li>
+          <li>Scrollable panels</li>
+        </ul>
+      </div>
+      <div class="screen-card">
+        <strong>Screen: Plan builder and monthly cost</strong>
+        <p>As a user, I want to see my selected plan and monthly estimate in one place.</p>
+        <p>This screen is impactful because it supports transparency before checkout.</p>
+        <ul>
+          <li>Drop zone for modules and phone</li>
+          <li>Monthly Cost Summary</li>
+          <li>Persona fit score</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="step-label step-two">Step 2</div>
+    <section class="desktop-wireframe" aria-label="Desktop wireframe">
+      <div class="wf-hero">
+        <div class="wf-hero-red">Build a plan<br>that fits<br>Praveen.</div>
+        <div class="wf-context">
+          <strong>Customer context</strong>
+          <div class="wf-context-grid">
+            <div class="mini-box">Current bill<br>$132 / mth</div>
+            <div class="mini-box">Avg local data<br>9GB / mth</div>
+            <div class="mini-box">Travel pattern<br>16 trips / yr</div>
+            <div class="mini-box">Priority<br>Roaming value</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-block wf-mira">MIRA GREETING + GUIDANCE</div>
+
+      <div class="wf-two-col">
+        <div class="wf-block wf-choice">MODULE LIBRARY<br><small>Data, roaming, entertainment, family sharing, contract length</small></div>
+        <div class="wf-block wf-choice">PHONE SELECTION<br><small>Phone image, specifications, monthly device cost</small></div>
+      </div>
+
+      <div class="wf-block wf-builder">PLAN BUILDER DROP ZONE<br><small>Selected modules and phone appear here</small></div>
+
+      <div class="wf-summary-row">
+        <div></div>
+        <div class="wf-block wf-summary">
+          <div class="summary-inner">
+            <strong>Monthly Cost Summary</strong>
+            <div class="summary-price">$28</div>
+            <div>Base mobile access</div>
+            <div class="summary-bar"><span></span></div>
+            <div class="summary-button">Continue with this plan</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="device-frames" aria-label="Responsive wireframes">
+      <div class="phone-frame">
+        <div class="mobile-block">Hero + customer context</div>
+        <div class="mobile-block mobile-medium">Mira greeting</div>
+        <div class="mobile-block mobile-large">Module Library</div>
+        <div class="mobile-block mobile-large">Phone Selection</div>
+        <div class="mobile-block mobile-large">Plan Builder</div>
+        <div class="mobile-button">Continue</div>
+      </div>
+      <div class="phone-frame">
+        <div class="mobile-block">Left/right hand toggle</div>
+        <div class="mobile-block mobile-large">Scrollable modules</div>
+        <div class="mobile-block mobile-large">Scrollable phones</div>
+        <div class="mobile-block mobile-medium">Drop module into plan</div>
+        <div class="mobile-button">Add</div>
+      </div>
+      <div class="phone-frame">
+        <div class="mobile-block mobile-medium">Monthly Cost Summary</div>
+        <div class="mobile-block">Selected phone</div>
+        <div class="mobile-block">Selected plan modules</div>
+        <div class="mobile-block">Persona fit score</div>
+        <div class="mobile-button">Checkout</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
