@@ -214,7 +214,7 @@
         "choices choices"
         "builder builder"
         ". summary";
-      gap: 18px;
+      gap: 12px;
       align-items: start;
     }
 
@@ -341,7 +341,7 @@
       grid-area: choices;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+      gap: 12px;
     }
 
     .builder-drop-panel {
@@ -400,6 +400,10 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
+      max-height: clamp(360px, 48vh, 540px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
     }
 
     .phone-card {
