@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Singtel Smart Upgrade - Modular Plan Builder</title>
+  <style>
+    :root {
+      --red: #f30b35;
+      --red-dark: #b80010;
+      --ink: #17202a;
+      --muted: #617083;
+      --line: #dbe2ea;
+      --soft: #f5f7fa;
+      --green: #157447;
+      --teal: #007f88;
+      --amber: #b76a00;
+      --white: #fff;
+      --shadow: 0 16px 40px rgba(21, 32, 43, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--ink);
+      background: #eef2f6;
+      letter-spacing: 0;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .topbar {
+      min-height: 72px;
+      padding: 10px 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 108px;
+      height: 58px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-title strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .brand-title span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .customer-pill {
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    main {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hand-toggle {
+      position: fixed;
+      left: 16px;
+      top: 86px;
+      z-index: 20;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(21, 32, 43, .14);
+      padding: 5px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .hand-toggle button {
+      min-height: 34px;
+      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .hand-toggle button.active {
+      background: var(--red);
+      color: white;
+    }
+
+    .hero {
+      min-height: 260px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(360px, 1fr) minmax(320px, 430px);
+      align-items: stretch;
+      background:
+        radial-gradient(90% 30% at 50% 112%, rgba(122, 0, 18, .9) 0%, rgba(122, 0, 18, .9) 53%, transparent 54%),
+        radial-gradient(circle, rgba(255, 255, 255, .22) 0 2px, transparent 2.4px) 0 0 / 16px 16px,
+        linear-gradient(118deg, #c60d27 0%, #d71534 58%, #ffffff 58.2%, #ffffff 100%);
+    }
+
+    .hero-copy {
+      color: white;
+      padding: 28px;
+      display: grid;
+      align-content: center;
+      gap: 13px;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.02;
+      max-width: 12ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 60ch;
+      line-height: 1.5;
+      color: #ffe8ec;
+      font-size: 15px;
+    }
+
+    .profile-card {
+      margin: 18px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      box-shadow: 0 12px 28px rgba(21, 32, 43, .12);
+    }
+
+    .profile-card h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+      min-height: 76px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      font-size: 18px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+      grid-template-areas:
+        "assistant assistant"
+        "choices choices"
+        "builder builder"
+        ". summary";
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 17px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.15;
+    }
+
+    .panel-header span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .assistant-panel {
+      grid-area: assistant;
+    }
+
+    .assistant-body {
+      padding: 0;
+      display: grid;
+      grid-template-columns: minmax(220px, 320px) 1fr;
+      gap: 0;
+      align-items: stretch;
+      min-height: 270px;
+    }
+
+    .mira-row {
+      display: grid;
+      align-content: end;
+      min-height: 100%;
+      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(23, 32, 42, 0) 40%, rgba(23, 32, 42, .72) 100%),
+        url("mira-ultra-realistic-avatar.png") center 24% / cover no-repeat;
+      color: white;
+    }
+
+    .avatar {
+      display: none;
+    }
+
+    .mira-row strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .mira-row span {
+      color: rgba(255,255,255,.86);
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .mira-guidance {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .assistant-bubble {
+      border-left: 4px solid var(--red);
+      background: #fff5f6;
+      border-radius: 8px;
+      padding: 13px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .tip-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .tip {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tip-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #edf8f1;
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .builder {
+      display: contents;
+    }
+
+    .choice-grid {
+      grid-area: choices;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .builder-drop-panel {
+      grid-area: builder;
+    }
+
+    .module-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 16px 0;
+    }
+
+    .tab {
+      min-height: 38px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 0 14px;
+      font-weight: 850;
+      color: var(--muted);
+      transition: background .16s ease, color .16s ease, border-color .16s ease;
+    }
+
+    .tab.active,
+    .tab:hover {
+      background: #fff5f6;
+      color: var(--red-dark);
+      border-color: var(--red);
+    }
+
+    .module-library {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-height: clamp(360px, 48vh, 540px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+
+    body.left-handed .module-library,
+    body.left-handed .drop-zone {
+      direction: rtl;
+    }
+
+    body.left-handed .module-card,
+    body.left-handed .selected-module,
+    body.left-handed .drop-empty {
+      direction: ltr;
+    }
+
+    .phone-catalog {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .phone-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      overflow: hidden;
+      cursor: grab;
+      display: grid;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .phone-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(21, 32, 43, .12);
+      border-color: rgba(243, 11, 53, .45);
+    }
+
+    .phone-card.selected {
+      border-color: var(--red);
+      background: #fff5f6;
+    }
+
+    .phone-art {
+      margin: 12px;
+      min-height: 170px;
+      border-radius: 8px;
+      background: #f2f2f3;
+      display: grid;
+      justify-items: center;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .phone-stage {
+      position: relative;
+      width: 132px;
+      height: 122px;
+    }
+
+    .phone-shape {
+      position: absolute;
+      border-radius: 16px;
+      border: 2px solid rgba(0,0,0,.16);
+      box-shadow: 0 10px 22px rgba(21, 32, 43, .2);
+    }
+
+    .phone-shape.back {
+      width: 62px;
+      height: 108px;
+      left: 14px;
+      top: 7px;
+      background: var(--phone-color);
+    }
+
+    .phone-shape.front {
+      width: 66px;
+      height: 108px;
+      right: 12px;
+      top: 7px;
+      background: var(--phone-screen);
+      overflow: hidden;
+    }
+
+    .phone-shape.front:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 7px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+    }
+
+    .phone-shape.back:before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 28px;
+      height: 38px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 8px 8px, #111 0 5px, transparent 6px),
+        radial-gradient(circle at 20px 10px, #111 0 5px, transparent 6px),
+        radial-gradient(circle at 13px 24px, #111 0 5px, transparent 6px),
+        rgba(255,255,255,.24);
+    }
+
+    .iphone-style { --phone-color: #ed7a28; --phone-screen: linear-gradient(135deg, #17100e, #f29a43 45%, #110b09 46%, #050505); }
+    .samsung-style { --phone-color: #4e4d7f; --phone-screen: linear-gradient(135deg, #d9c9ff, #895fed 55%, #f7edf8); }
+    .oppo-style { --phone-color: #2f3030; --phone-screen: linear-gradient(135deg, #0e0e0f, #c66a25 46%, #f2c08a 64%, #0f0f10); }
+    .pixel-style { --phone-color: #757b8c; --phone-screen: linear-gradient(135deg, #b9d8ee, #eef8ff 45%, #84b6d7 46%, #111); }
+
+    .phone-details {
+      padding: 0 14px 14px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .phone-details h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .phone-details ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .phone-price {
+      color: var(--red-dark);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .phone-market {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .phone-market strong {
+      color: var(--ink);
+    }
+
+    .market-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .market-row span:first-child {
+      min-width: max-content;
+    }
+
+    .market-note {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    body.left-handed .phone-catalog {
+      direction: rtl;
+    }
+
+    body.left-handed .phone-card {
+      direction: ltr;
+    }
+
+    .module-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      min-height: 150px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      cursor: grab;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .module-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(21, 32, 43, .12);
+      border-color: rgba(243, 11, 53, .45);
+    }
+
+    .module-card:active {
+      cursor: grabbing;
+    }
+
+    .module-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .module-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--red-dark);
+      font-weight: 900;
+    }
+
+    .module-price {
+      color: var(--red-dark);
+      font-weight: 900;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .module-card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .module-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .module-card.selected {
+      border-color: var(--red);
+      background: #fff5f6;
+    }
+
+    .drop-zone {
+      min-height: 355px;
+      max-height: clamp(355px, 50vh, 560px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      background:
+        linear-gradient(white, white) padding-box,
+        repeating-linear-gradient(45deg, rgba(243,11,53,.45) 0 8px, rgba(0,127,136,.35) 8px 16px) border-box;
+      border: 2px dashed rgba(243, 11, 53, .36);
+      border-radius: 8px;
+      transition: background .16s ease, border-color .16s ease;
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--red);
+      background: #fff5f6;
+    }
+
+    .drop-empty {
+      min-height: 190px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .selected-module {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 11px;
+      align-items: center;
+    }
+
+    .selected-module h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .selected-module p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .remove {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--muted);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .remove:hover {
+      border-color: var(--red);
+      color: var(--red-dark);
+      background: #fff5f6;
+    }
+
+    .summary-panel {
+      grid-area: summary;
+      width: min(100%, 360px);
+      justify-self: end;
+    }
+
+    .summary-body {
+      padding: 16px;
+      display: grid;
+      gap: 15px;
+    }
+
+    .total {
+      border: 1px solid rgba(243, 11, 53, .22);
+      background: #fff5f6;
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .total span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .total strong {
+      color: var(--red-dark);
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 10px;
+    }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .line-item strong {
+      color: var(--ink);
+    }
+
+    .line-item small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      margin-top: 3px;
+    }
+
+    .quality-score {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .bar {
+      height: 9px;
+      border-radius: 999px;
+      background: #e8edf3;
+      overflow: hidden;
+    }
+
+    .bar span {
+      width: var(--score);
+      height: 100%;
+      display: block;
+      background: var(--teal);
+    }
+
+    .primary {
+      min-height: 48px;
+      border-radius: 999px;
+      border: 1px solid var(--red);
+      background: var(--red);
+      color: white;
+      padding: 0 24px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(243, 11, 53, .2);
+    }
+
+    .primary:hover {
+      background: var(--red-dark);
+      border-color: var(--red-dark);
+    }
+
+    .secondary {
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      padding: 0 18px;
+      font-weight: 850;
+    }
+
+    .secondary:hover {
+      border-color: var(--red);
+      color: var(--red-dark);
+      background: #fff5f6;
+    }
+
+    @media (max-width: 1120px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "assistant"
+          "choices"
+          "builder"
+          "summary";
+      }
+
+      .assistant-panel,
+      .summary-panel {
+        position: static;
+      }
+
+      .summary-panel {
+        justify-self: stretch;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar,
+      .brand {
+        align-items: stretch;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .hero,
+      .profile-grid,
+      .module-library,
+      .phone-catalog,
+      .choice-grid,
+      .assistant-body {
+        grid-template-columns: 1fr;
+      }
+
+      .mira-row {
+        min-height: 300px;
+      }
+
+      .hero {
+        background:
+          radial-gradient(95% 25% at 50% 112%, rgba(122, 0, 18, .9) 0%, rgba(122, 0, 18, .9) 53%, transparent 54%),
+          radial-gradient(circle, rgba(255, 255, 255, .22) 0 2px, transparent 2.4px) 0 0 / 16px 16px,
+          linear-gradient(145deg, #c60d27 0%, #d71534 100%);
+      }
+
+      .profile-card {
+        margin: 0 18px 18px;
+      }
+
+      .hand-toggle {
+        top: auto;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .module-library,
+      .drop-zone {
+        max-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="singtel-logo.svg" alt="Singtel">
+      <div class="brand-title">
+        <strong>Smart Upgrade Builder</strong>
+      </div>
+    </div>
+    <div class="customer-pill">Logged in as Praveen D</div>
+  </header>
+
+  <div class="hand-toggle" aria-label="Handedness layout toggle">
+    <button type="button" class="active" id="rightHandBtn">Right hand</button>
+    <button type="button" id="leftHandBtn">Left hand</button>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Build a plan that fits Praveen.</h1>
+      </div>
+      <div class="profile-card">
+        <h2>Customer context</h2>
+        <div class="profile-grid">
+          <div class="metric">
+            <span>Current bill</span>
+            <strong>$132 / mth</strong>
+          </div>
+          <div class="metric">
+            <span>Avg local data</span>
+            <strong>9GB / mth</strong>
+          </div>
+          <div class="metric">
+            <span>Travel pattern</span>
+            <strong>16 trips / yr</strong>
+          </div>
+          <div class="metric">
+            <span>Priority</span>
+            <strong>Roaming value</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel assistant-panel">
+        <div class="panel-header">
+          <h2>Mira</h2>
+        </div>
+        <div class="assistant-body">
+          <div class="mira-row">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <strong>Hi Praveen.</strong>
+              <span>I’ll help you build the right plan.</span>
+            </div>
+          </div>
+          <div class="mira-guidance">
+          <div class="assistant-bubble" id="miraAdvice">
+            Start with data, then add roaming because your travel history shows frequent overseas usage. I’ll update the estimate as you build.
+          </div>
+          <div class="tip-list">
+            <div class="tip"><div class="tip-icon">1</div><div>Drag one or more modules into your plan.</div></div>
+            <div class="tip"><div class="tip-icon">2</div><div>Remove modules anytime to compare value.</div></div>
+            <div class="tip"><div class="tip-icon">3</div><div>Review the monthly estimate before checkout.</div></div>
+          </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="builder">
+        <div class="choice-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Module Library</h2>
+              <span>Drag into plan</span>
+            </div>
+            <div class="module-tabs" id="moduleTabs"></div>
+            <div class="module-library" id="moduleLibrary"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Phone Selection</h2>
+              <span>Drag into plan</span>
+            </div>
+            <div class="phone-catalog" id="phoneCatalog"></div>
+          </div>
+        </div>
+
+        <div class="panel builder-drop-panel">
+          <div class="panel-header">
+            <h2>Praveen’s Plan Builder</h2>
+            <span>Drop modules here</span>
+          </div>
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-empty" id="dropEmpty">
+              Drag modules here to assemble a plan. Mira recommends starting with <strong>12GB Data</strong>, <strong>Worldwide Roaming</strong>, and <strong>No Contract</strong>.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel summary-panel">
+        <div class="panel-header">
+          <h2>Monthly Cost Summary</h2>
+          <span>Live estimate</span>
+        </div>
+        <div class="summary-body">
+          <div class="total">
+            <span>Estimated monthly bill</span>
+            <strong id="totalPrice">$0</strong>
+            <small>Updates as modules are added or removed.</small>
+          </div>
+          <div class="breakdown" id="breakdown"></div>
+          <div class="quality-score">
+            <div class="score-row">
+              <span>Persona fit</span>
+              <strong id="fitScore">0%</strong>
+            </div>
+            <div class="bar" style="--score:0%" id="fitBar"><span></span></div>
+          </div>
+          <button class="primary" id="checkoutBtn">Continue with this plan</button>
+          <button class="secondary" id="resetBtn">Reset builder</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const modules = [
+      { id: 'data-12', type: 'data', icon: 'GB', title: '12GB Data', price: 18, desc: 'Right-sized data for Praveen’s 9GB monthly average with buffer.' },
+      { id: 'data-unlimited', type: 'data', icon: '∞', title: 'Unlimited Data', price: 40, desc: 'Best if Praveen expects heavier hotspot or work usage.' },
+      { id: 'roam-asia', type: 'roaming', icon: '✈', title: 'Asia Roaming', price: 16, desc: 'Regional roaming for Malaysia, Hong Kong and Japan.' },
+      { id: 'roam-world', type: 'roaming', icon: '🌐', title: 'Worldwide Roaming', price: 28, desc: 'Recommended for frequent travel including US and Europe.' },
+      { id: 'ent-basic', type: 'entertainment', icon: '▶', title: 'Entertainment Lite', price: 8, desc: 'Music and video perk bundle for personal use.' },
+      { id: 'ent-premium', type: 'entertainment', icon: '★', title: 'Entertainment Plus', price: 15, desc: 'Premium media bundle for family and travel downtime.' },
+      { id: 'family-one', type: 'family', icon: '+1', title: '1 Family Share Line', price: 10, desc: 'Share plan benefits with one family member.' },
+      { id: 'family-three', type: 'family', icon: '+3', title: '3 Family Share Lines', price: 24, desc: 'Best for larger family sharing needs.' },
+      { id: 'contract-none', type: 'contract', icon: '0', title: 'No Contract', price: 0, desc: 'Maximum flexibility with no lock-in.' },
+      { id: 'contract-24', type: 'contract', icon: '24', title: '24-Month Contract', price: -12, desc: 'Lower monthly cost in exchange for commitment.' }
+    ];
+
+    const phones = [
+      {
+        id: 'iphone-17-pro-max',
+        style: 'iphone-style',
+        title: 'iPhone 17 Pro Max',
+        price: 53,
+        todayPrice: 1899,
+        tradeInOneYear: 1050,
+        marketNote: 'Retail today based on Apple SG 256GB pricing. Trade-in is estimated from current iPhone 16 Pro Max Singapore trade-in values.',
+        specs: ['6.9-inch ProMotion display', 'Triple-lens pro camera', '256GB storage']
+      },
+      {
+        id: 'galaxy-s26-ultra',
+        style: 'samsung-style',
+        title: 'Samsung Galaxy S26 Ultra',
+        price: 51,
+        todayPrice: 1828,
+        tradeInOneYear: 820,
+        marketNote: 'Retail today based on Singapore 256GB RRP. Trade-in is estimated from current Galaxy Ultra buyback values.',
+        specs: ['6.8-inch AMOLED display', 'S Pen included', 'AI zoom camera']
+      },
+      {
+        id: 'oppo-find-x9-ultra',
+        style: 'oppo-style',
+        title: 'OPPO Find X9 Ultra',
+        price: 57,
+        todayPrice: 2049,
+        tradeInOneYear: 500,
+        marketNote: 'Retail today uses OPPO Singapore launch-period 512GB pricing. Trade-in is an estimated Android flagship resale value.',
+        specs: ['AI imaging system', 'Ultra-fast charging', '512GB storage']
+      },
+      {
+        id: 'pixel-10-pro',
+        style: 'pixel-style',
+        title: 'Google Pixel 10 Pro',
+        price: 41,
+        todayPrice: 1459,
+        tradeInOneYear: 600,
+        marketNote: 'Retail today based on Google Store SG 128GB pricing. Trade-in is estimated from current Pixel Pro resale values.',
+        specs: ['Google AI features', 'Pro camera tools', '7 years updates']
+      }
+    ];
+
+    const typeLabels = {
+      all: 'All',
+      data: 'Data',
+      roaming: 'Roaming',
+      entertainment: 'Entertainment',
+      family: 'Family Sharing',
+      contract: 'Contract Length'
+    };
+
+    const selected = new Map();
+    let selectedPhone = null;
+    let activeType = 'all';
+
+    const moduleTabs = document.getElementById('moduleTabs');
+    const moduleLibrary = document.getElementById('moduleLibrary');
+    const phoneCatalog = document.getElementById('phoneCatalog');
+    const dropZone = document.getElementById('dropZone');
+    const dropEmpty = document.getElementById('dropEmpty');
+    const totalPrice = document.getElementById('totalPrice');
+    const breakdown = document.getElementById('breakdown');
+    const fitScore = document.getElementById('fitScore');
+    const fitBar = document.getElementById('fitBar');
+    const miraAdvice = document.getElementById('miraAdvice');
+    const rightHandBtn = document.getElementById('rightHandBtn');
+    const leftHandBtn = document.getElementById('leftHandBtn');
+
+    function formatSgd(value) {
+      return `S$${value.toLocaleString('en-SG')}`;
+    }
+
+    function setHandMode(mode) {
+      const isLeft = mode === 'left';
+      document.body.classList.toggle('left-handed', isLeft);
+      rightHandBtn.classList.toggle('active', !isLeft);
+      leftHandBtn.classList.toggle('active', isLeft);
+    }
+
+    function renderTabs() {
+      moduleTabs.innerHTML = '';
+      Object.entries(typeLabels).forEach(([type, label]) => {
+        const button = document.createElement('button');
+        button.className = 'tab' + (type === activeType ? ' active' : '');
+        button.textContent = label;
+        button.addEventListener('click', () => {
+          activeType = type;
+          renderTabs();
+          renderLibrary();
+        });
+        moduleTabs.appendChild(button);
+      });
+    }
+
+    function renderLibrary() {
+      moduleLibrary.innerHTML = '';
+      modules
+        .filter(module => activeType === 'all' || module.type === activeType)
+        .forEach(module => {
+          const card = document.createElement('article');
+          card.className = 'module-card' + (selected.has(module.id) ? ' selected' : '');
+          card.draggable = true;
+          card.dataset.moduleId = module.id;
+          card.innerHTML = `
+            <div class="module-top">
+              <div class="module-icon">${module.icon}</div>
+              <div class="module-price">${module.price < 0 ? '-' : '+'}$${Math.abs(module.price)}</div>
+            </div>
+            <h3>${module.title}</h3>
+            <p>${module.desc}</p>
+          `;
+          card.addEventListener('dragstart', event => {
+            event.dataTransfer.setData('text/plain', module.id);
+          });
+          card.addEventListener('click', () => addModule(module.id));
+          moduleLibrary.appendChild(card);
+        });
+    }
+
+    function renderPhones() {
+      phoneCatalog.innerHTML = '';
+      phones.forEach(phone => {
+        const card = document.createElement('article');
+        card.className = `phone-card ${phone.style}` + (selectedPhone && selectedPhone.id === phone.id ? ' selected' : '');
+        card.draggable = true;
+        card.dataset.phoneId = phone.id;
+        card.innerHTML = `
+          <div class="phone-art">
+            <div class="phone-stage">
+              <div class="phone-shape back"></div>
+              <div class="phone-shape front"></div>
+            </div>
+          </div>
+          <div class="phone-details">
+            <h3>${phone.title}</h3>
+            <div class="phone-price">+$${phone.price}/mth</div>
+            <div class="phone-market">
+              <div class="market-row"><span>Retail today</span><strong>${formatSgd(phone.todayPrice)}</strong></div>
+              <div class="market-row"><span>Est. trade-in in 1 yr</span><strong>${formatSgd(phone.tradeInOneYear)}</strong></div>
+              <div class="market-note">${phone.marketNote}</div>
+            </div>
+            <ul>${phone.specs.map(spec => `<li>${spec}</li>`).join('')}</ul>
+          </div>
+        `;
+        card.addEventListener('dragstart', event => {
+          event.dataTransfer.setData('text/plain', `phone:${phone.id}`);
+        });
+        card.addEventListener('click', () => addPhone(phone.id));
+        phoneCatalog.appendChild(card);
+      });
+    }
+
+    function addModule(id) {
+      const module = modules.find(item => item.id === id);
+      if (!module || selected.has(id)) return;
+
+      for (const existing of selected.values()) {
+        if (existing.type === module.type && ['data', 'roaming', 'contract'].includes(module.type)) {
+          selected.delete(existing.id);
+        }
+      }
+
+      selected.set(id, module);
+      renderAll();
+    }
+
+    function addPhone(id) {
+      const phone = phones.find(item => item.id === id);
+      if (!phone) return;
+      selectedPhone = phone;
+      renderAll();
+    }
+
+    function removePhone() {
+      selectedPhone = null;
+      renderAll();
+    }
+
+    function removeModule(id) {
+      selected.delete(id);
+      renderAll();
+    }
+
+    function renderSelected() {
+      const modulesSelected = Array.from(selected.values());
+      dropZone.innerHTML = '';
+      if (!modulesSelected.length && !selectedPhone) {
+        dropZone.appendChild(dropEmpty);
+        return;
+      }
+
+      if (selectedPhone) {
+        const phone = document.createElement('div');
+        phone.className = 'selected-module';
+        phone.innerHTML = `
+          <div class="module-icon">📱</div>
+          <div>
+            <h3>${selectedPhone.title}</h3>
+            <p>Retail today ${formatSgd(selectedPhone.todayPrice)} | Est. 1-year trade-in ${formatSgd(selectedPhone.tradeInOneYear)}</p>
+            <p>${selectedPhone.specs.join(' • ')}</p>
+          </div>
+          <button class="remove" aria-label="Remove ${selectedPhone.title}">×</button>
+        `;
+        phone.querySelector('button').addEventListener('click', removePhone);
+        dropZone.appendChild(phone);
+      }
+
+      modulesSelected.forEach(module => {
+        const item = document.createElement('div');
+        item.className = 'selected-module';
+        item.innerHTML = `
+          <div class="module-icon">${module.icon}</div>
+          <div>
+            <h3>${module.title}</h3>
+            <p>${module.desc}</p>
+          </div>
+          <button class="remove" aria-label="Remove ${module.title}">×</button>
+        `;
+        item.querySelector('button').addEventListener('click', () => removeModule(module.id));
+        dropZone.appendChild(item);
+      });
+    }
+
+    function calculateFit() {
+      let score = 30;
+      if (selected.has('data-12')) score += 22;
+      if (selected.has('data-unlimited')) score += 14;
+      if (selected.has('roam-world')) score += 28;
+      if (selected.has('roam-asia')) score += 18;
+      if (selected.has('contract-none')) score += 15;
+      if (selected.has('contract-24')) score += 8;
+      if (selected.has('family-one') || selected.has('family-three')) score += 8;
+      if (selected.has('ent-basic') || selected.has('ent-premium')) score += 4;
+      if (selectedPhone) score += 10;
+      return Math.min(99, score);
+    }
+
+    function renderSummary() {
+      const base = 28;
+      const modulesSelected = Array.from(selected.values());
+      const phoneTotal = selectedPhone ? selectedPhone.price : 0;
+      const moduleTotal = modulesSelected.reduce((sum, module) => sum + module.price, 0);
+      const total = Math.max(0, base + moduleTotal);
+      const totalWithPhone = Math.max(0, total + phoneTotal);
+
+      totalPrice.textContent = `$${totalWithPhone}`;
+      breakdown.innerHTML = `
+        <div class="line-item"><span>Base mobile access</span><strong>$${base}</strong></div>
+        ${selectedPhone ? `<div class="line-item"><span>${selectedPhone.title}<small>Retail ${formatSgd(selectedPhone.todayPrice)} | Est. 1-year trade-in ${formatSgd(selectedPhone.tradeInOneYear)}</small></span><strong>$${selectedPhone.price}</strong></div>` : ''}
+        ${modulesSelected.map(module => `
+          <div class="line-item"><span>${module.title}</span><strong>${module.price < 0 ? '-' : ''}$${Math.abs(module.price)}</strong></div>
+        `).join('')}
+      `;
+
+      const score = calculateFit();
+      fitScore.textContent = `${score}%`;
+      fitBar.style.setProperty('--score', `${score}%`);
+      fitBar.querySelector('span').style.width = `${score}%`;
+    }
+
+    function renderAdvice() {
+      if (!selected.size) {
+        miraAdvice.textContent = 'Start with data, then add roaming because your travel history shows frequent overseas usage. I’ll update the estimate as you build.';
+        return;
+      }
+      if (!Array.from(selected.values()).some(module => module.type === 'data')) {
+        miraAdvice.textContent = 'You have not chosen a data module yet. Based on Praveen’s 9GB monthly average, 12GB Data is the best starting point.';
+        return;
+      }
+      if (!Array.from(selected.values()).some(module => module.type === 'roaming')) {
+        miraAdvice.textContent = 'Good. Next, add a roaming module. Since Praveen travels often, Worldwide Roaming is the stronger fit.';
+        return;
+      }
+      if (!Array.from(selected.values()).some(module => module.type === 'contract')) {
+        miraAdvice.textContent = 'The plan is taking shape. Choose a contract length now: No Contract for flexibility, or 24 months for a lower monthly cost.';
+        return;
+      }
+      if (!selectedPhone) {
+        miraAdvice.textContent = 'Now choose a phone. Drag one of the flagship devices into the builder to see the full monthly cost.';
+        return;
+      }
+      miraAdvice.textContent = 'This plan is ready for review. It balances data needs, travel coverage, flexibility and monthly cost transparency.';
+    }
+
+    function renderAll() {
+      renderLibrary();
+      renderPhones();
+      renderSelected();
+      renderSummary();
+      renderAdvice();
+    }
+
+    dropZone.addEventListener('dragover', event => {
+      event.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', event => {
+      event.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const id = event.dataTransfer.getData('text/plain');
+      if (id.startsWith('phone:')) {
+        addPhone(id.replace('phone:', ''));
+      } else {
+        addModule(id);
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      selected.clear();
+      selectedPhone = null;
+      renderAll();
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      miraAdvice.textContent = 'Great. I’ll carry this modular plan into checkout with a full monthly cost summary.';
+    });
+
+    rightHandBtn.addEventListener('click', () => setHandMode('right'));
+    leftHandBtn.addEventListener('click', () => setHandMode('left'));
+
+    renderTabs();
+    renderAll();
+  </script>
+</body>
+</html>
