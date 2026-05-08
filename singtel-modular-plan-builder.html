@@ -95,36 +95,6 @@
       gap: 18px;
     }
 
-    .hand-toggle {
-      position: fixed;
-      left: 16px;
-      top: 86px;
-      z-index: 20;
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      box-shadow: 0 10px 24px rgba(21, 32, 43, .14);
-      padding: 5px;
-      display: flex;
-      gap: 4px;
-    }
-
-    .hand-toggle button {
-      min-height: 34px;
-      border-radius: 999px;
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      padding: 0 12px;
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .hand-toggle button.active {
-      background: var(--red);
-      color: white;
-    }
-
     .plan-tray {
       position: fixed;
       right: 16px;
@@ -164,16 +134,6 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.35;
-    }
-
-    body.left-handed .plan-tray {
-      right: auto;
-      left: 16px;
-      transform: translate(-18px, -50%) scale(.96);
-    }
-
-    body.left-handed .plan-tray.visible {
-      transform: translate(0, -50%) scale(1);
     }
 
     .hero {
@@ -340,6 +300,10 @@
       font-size: 14px;
     }
 
+    .mira-row span + span {
+      display: none;
+    }
+
     .mira-guidance {
       padding: 18px;
       display: grid;
@@ -354,6 +318,23 @@
       padding: 13px;
       line-height: 1.45;
       font-size: 14px;
+      min-height: 82px;
+      position: relative;
+    }
+
+    .assistant-bubble.typing:after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      margin-left: 3px;
+      vertical-align: -2px;
+      background: var(--red-dark);
+      animation: cursorBlink .78s steps(1) infinite;
+    }
+
+    @keyframes cursorBlink {
+      50% { opacity: 0; }
     }
 
     .tip-list {
@@ -433,17 +414,6 @@
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-gutter: stable;
-    }
-
-    body.left-handed .module-library,
-    body.left-handed .drop-zone {
-      direction: rtl;
-    }
-
-    body.left-handed .module-card,
-    body.left-handed .selected-module,
-    body.left-handed .drop-empty {
-      direction: ltr;
     }
 
     .phone-catalog {
@@ -594,25 +564,6 @@
       color: var(--ink);
     }
 
-    .card-action {
-      min-height: 36px;
-      border-radius: 999px;
-      border: 1px solid var(--red);
-      background: white;
-      color: var(--red-dark);
-      font-size: 12px;
-      font-weight: 900;
-      transition: background .16s ease, color .16s ease, border-color .16s ease;
-    }
-
-    .card-action:hover,
-    .module-card.selected .card-action,
-    .phone-card.selected .card-action {
-      background: var(--red);
-      color: white;
-      border-color: var(--red);
-    }
-
     .market-row {
       display: flex;
       justify-content: space-between;
@@ -627,14 +578,6 @@
       color: var(--muted);
       font-size: 11px;
       line-height: 1.3;
-    }
-
-    body.left-handed .phone-catalog {
-      direction: rtl;
-    }
-
-    body.left-handed .phone-card {
-      direction: ltr;
     }
 
     .module-card {
@@ -951,15 +894,7 @@
         margin: 0 18px 18px;
       }
 
-      .hand-toggle {
-        top: auto;
-        bottom: 14px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-
-      .plan-tray,
-      body.left-handed .plan-tray {
+      .plan-tray {
         top: auto;
         right: 12px;
         left: 12px;
@@ -968,8 +903,7 @@
         transform: translateY(14px) scale(.98);
       }
 
-      .plan-tray.visible,
-      body.left-handed .plan-tray.visible {
+      .plan-tray.visible {
         transform: translateY(0) scale(1);
       }
 
@@ -990,11 +924,6 @@
     </div>
     <div class="customer-pill">Logged in as Praveen D</div>
   </header>
-
-  <div class="hand-toggle" aria-label="Handedness layout toggle">
-    <button type="button" class="active" id="rightHandBtn">Right hand</button>
-    <button type="button" id="leftHandBtn">Left hand</button>
-  </div>
 
   <div class="plan-tray" id="planTray" aria-live="polite">
     <strong>Drop to add</strong>
@@ -1041,6 +970,7 @@
             <div class="avatar" aria-hidden="true"></div>
             <div>
               <strong>Hi Praveen.</strong>
+              <span>I'll help you build the right plan.</span>
               <span>I’ll help you build the right plan.</span>
             </div>
           </div>
@@ -1104,7 +1034,7 @@
           <div class="breakdown" id="breakdown"></div>
           <div class="quality-score">
             <div class="score-row">
-              <span>Persona fit</span>
+              <span>Match with customers like you</span>
               <strong id="fitScore">0%</strong>
             </div>
             <div class="bar" style="--score:0%" id="fitBar"><span></span></div>
@@ -1196,22 +1126,15 @@
     const fitScore = document.getElementById('fitScore');
     const fitBar = document.getElementById('fitBar');
     const miraAdvice = document.getElementById('miraAdvice');
-    const rightHandBtn = document.getElementById('rightHandBtn');
-    const leftHandBtn = document.getElementById('leftHandBtn');
     const planTray = document.getElementById('planTray');
     const trayCount = document.getElementById('trayCount');
     const trayTotal = document.getElementById('trayTotal');
     let trayTimer = null;
+    let adviceTimer = null;
+    let currentAdvice = '';
 
     function formatSgd(value) {
       return `S$${value.toLocaleString('en-SG')}`;
-    }
-
-    function setHandMode(mode) {
-      const isLeft = mode === 'left';
-      document.body.classList.toggle('left-handed', isLeft);
-      rightHandBtn.classList.toggle('active', !isLeft);
-      leftHandBtn.classList.toggle('active', isLeft);
     }
 
     function calculateMonthlyTotal() {
@@ -1249,6 +1172,27 @@
       }
     }
 
+    function typeMiraAdvice(message) {
+      if (message === currentAdvice && miraAdvice.textContent) return;
+
+      currentAdvice = message;
+      clearInterval(adviceTimer);
+      miraAdvice.textContent = '';
+      miraAdvice.classList.add('typing');
+
+      let index = 0;
+      adviceTimer = setInterval(() => {
+        miraAdvice.textContent = message.slice(0, index + 1);
+        index += 1;
+
+        if (index >= message.length) {
+          clearInterval(adviceTimer);
+          adviceTimer = null;
+          miraAdvice.classList.remove('typing');
+        }
+      }, 24);
+    }
+
     function renderTabs() {
       moduleTabs.innerHTML = '';
       Object.entries(typeLabels).forEach(([type, label]) => {
@@ -1280,7 +1224,6 @@
             </div>
             <h3>${module.title}</h3>
             <p>${module.desc}</p>
-            <button type="button" class="card-action">${selected.has(module.id) ? 'Added' : 'Add to plan'}</button>
           `;
           card.addEventListener('dragstart', event => {
             event.dataTransfer.setData('text/plain', module.id);
@@ -1317,7 +1260,6 @@
               <div class="market-note">${phone.marketNote}</div>
             </div>
             <ul>${phone.specs.map(spec => `<li>${spec}</li>`).join('')}</ul>
-            <button type="button" class="card-action">${selectedPhone && selectedPhone.id === phone.id ? 'Added' : 'Add to plan'}</button>
           </div>
         `;
         card.addEventListener('dragstart', event => {
@@ -1465,12 +1407,30 @@
       miraAdvice.textContent = 'This plan is ready for review. It balances data needs, travel coverage, flexibility and monthly cost transparency.';
     }
 
+    function renderAdviceTyped() {
+      let advice = '';
+      if (!selected.size) {
+        advice = 'Start with data, then add roaming because your travel history shows frequent overseas usage. I’ll update the estimate as you build.';
+      } else if (!Array.from(selected.values()).some(module => module.type === 'data')) {
+        advice = 'You have not chosen a data module yet. Based on Praveen’s 9GB monthly average, 12GB Data is the best starting point.';
+      } else if (!Array.from(selected.values()).some(module => module.type === 'roaming')) {
+        advice = 'Good. Next, add a roaming module. Since Praveen travels often, Worldwide Roaming is the stronger fit.';
+      } else if (!Array.from(selected.values()).some(module => module.type === 'contract')) {
+        advice = 'The plan is taking shape. Choose a contract length now: No Contract for flexibility, or 24 months for a lower monthly cost.';
+      } else if (!selectedPhone) {
+        advice = 'Now choose a phone. Drag one of the flagship devices into the builder to see the full monthly cost.';
+      } else {
+        advice = 'This plan is ready for review. It balances data needs, travel coverage, flexibility and monthly cost transparency.';
+      }
+      typeMiraAdvice(advice);
+    }
+
     function renderAll() {
       renderLibrary();
       renderPhones();
       renderSelected();
       renderSummary();
-      renderAdvice();
+      renderAdviceTyped();
     }
 
     dropZone.addEventListener('dragover', event => {
@@ -1517,8 +1477,9 @@
       miraAdvice.textContent = 'Great. I’ll carry this modular plan into checkout with a full monthly cost summary.';
     });
 
-    rightHandBtn.addEventListener('click', () => setHandMode('right'));
-    leftHandBtn.addEventListener('click', () => setHandMode('left'));
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      typeMiraAdvice('Great. I’ll carry this modular plan into checkout with a full monthly cost summary.');
+    });
 
     renderTabs();
     renderAll();
