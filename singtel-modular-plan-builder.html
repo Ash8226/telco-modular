@@ -136,6 +136,196 @@
       line-height: 1.35;
     }
 
+    .mira-chathead {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 42;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid white;
+      background:
+        linear-gradient(180deg, rgba(23, 32, 42, 0) 34%, rgba(23, 32, 42, .65) 100%),
+        url("mira-ultra-realistic-avatar.png") center top / cover no-repeat;
+      box-shadow: 0 16px 34px rgba(21, 32, 43, .28);
+      color: white;
+      display: grid;
+      align-items: end;
+      justify-items: center;
+      padding: 0 0 7px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px) scale(.92);
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .mira-chathead.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .mira-chathead span {
+      font-size: 10px;
+      font-weight: 900;
+      text-shadow: 0 1px 5px rgba(0,0,0,.55);
+    }
+
+    .mira-chat {
+      position: fixed;
+      right: 18px;
+      bottom: 94px;
+      z-index: 41;
+      width: min(380px, calc(100vw - 36px));
+      max-height: min(620px, calc(100vh - 130px));
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 22px 54px rgba(21, 32, 43, .28);
+      display: none;
+      overflow: hidden;
+    }
+
+    .mira-chat.open {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .mira-chat-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #fff5f6;
+    }
+
+    .mira-chat-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+    }
+
+    .mira-chat-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: url("mira-ultra-realistic-avatar.png") center top / cover no-repeat;
+      border: 1px solid white;
+      box-shadow: 0 5px 14px rgba(21, 32, 43, .18);
+    }
+
+    .mira-chat-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: white;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .mira-chat-messages {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      overflow-y: auto;
+      background: #f8fafc;
+    }
+
+    .chat-message {
+      max-width: 86%;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.42;
+      box-shadow: 0 6px 14px rgba(21, 32, 43, .08);
+    }
+
+    .chat-message.mira {
+      justify-self: start;
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .chat-message.mira.typing:after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      margin-left: 3px;
+      vertical-align: -2px;
+      background: var(--red-dark);
+      animation: cursorBlink .78s steps(1) infinite;
+    }
+
+    .chat-message.user {
+      justify-self: end;
+      background: var(--red);
+      color: white;
+    }
+
+    .mira-chat-controls {
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 9px;
+      background: white;
+    }
+
+    .chat-suggestions {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .chat-suggestions button {
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      padding: 0 11px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .chat-suggestions button:hover {
+      border-color: var(--red);
+      color: var(--red-dark);
+      background: #fff5f6;
+    }
+
+    .chat-input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .chat-input-row input {
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 0 14px;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .chat-input-row button {
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--red);
+      background: var(--red);
+      color: white;
+      padding: 0 15px;
+      font-weight: 900;
+    }
+
     .hero {
       min-height: 260px;
       border: 1px solid var(--line);
@@ -584,11 +774,12 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: white;
-      min-height: 150px;
-      padding: 14px;
+      min-height: 112px;
+      padding: 12px;
       display: grid;
-      gap: 10px;
+      gap: 8px;
       cursor: grab;
+      position: relative;
       transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
     }
 
@@ -629,20 +820,64 @@
 
     .module-card h3 {
       margin: 0;
-      font-size: 16px;
+      font-size: 14px;
       line-height: 1.2;
-    }
-
-    .module-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
+      padding-right: 26px;
     }
 
     .module-card.selected {
       border-color: var(--red);
       background: #fff5f6;
+    }
+
+    .module-info {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      cursor: help;
+    }
+
+    .module-info:hover,
+    .module-info:focus,
+    .module-info.open {
+      border-color: var(--red);
+      background: #fff5f6;
+      color: var(--red-dark);
+      outline: none;
+    }
+
+    .module-tooltip {
+      position: absolute;
+      right: 8px;
+      bottom: 44px;
+      z-index: 5;
+      width: min(245px, calc(100vw - 56px));
+      border: 1px solid rgba(243, 11, 53, .28);
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 16px 32px rgba(21, 32, 43, .18);
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.4;
+      padding: 10px;
+      display: none;
+      cursor: default;
+    }
+
+    .module-info:hover + .module-tooltip,
+    .module-info:focus + .module-tooltip,
+    .module-info.open + .module-tooltip {
+      display: block;
     }
 
     .drop-zone {
@@ -907,6 +1142,18 @@
         transform: translateY(0) scale(1);
       }
 
+      .mira-chathead {
+        right: 14px;
+        bottom: 14px;
+      }
+
+      .mira-chat {
+        right: 12px;
+        left: 12px;
+        bottom: 88px;
+        width: auto;
+      }
+
       .module-library,
       .drop-zone {
         max-height: 420px;
@@ -922,20 +1169,50 @@
         <strong>Smart Upgrade Builder</strong>
       </div>
     </div>
-    <div class="customer-pill">Logged in as Praveen D</div>
+    <div class="customer-pill">Logged in as Marcus</div>
   </header>
 
   <div class="plan-tray" id="planTray" aria-live="polite">
     <strong>Drop to add</strong>
-    <span>Collect Praveen's modules and phone here.</span>
+    <span>Collect Marcus's modules and phone here.</span>
     <small id="trayCount">0 items selected</small>
-    <small id="trayTotal">Estimated bill: $28/mth</small>
+    <small id="trayTotal">Estimated bill: $8/mth</small>
   </div>
+
+  <button class="mira-chathead" id="miraChathead" type="button" aria-label="Ask Mira">
+    <span>Mira</span>
+  </button>
+
+  <aside class="mira-chat" id="miraChat" aria-label="Mira chat assistant">
+    <div class="mira-chat-header">
+      <div class="mira-chat-title">
+        <div class="mira-chat-avatar" aria-hidden="true"></div>
+        <div>
+          <div>Mira</div>
+          <small>Plan assistant</small>
+        </div>
+      </div>
+      <button class="mira-chat-close" id="miraChatClose" type="button" aria-label="Close Mira chat">x</button>
+    </div>
+    <div class="mira-chat-messages" id="miraChatMessages"></div>
+    <div class="mira-chat-controls">
+      <div class="chat-suggestions">
+        <button type="button" data-chat-prompt="Why is this recommended?">Why this?</button>
+        <button type="button" data-chat-prompt="How can I lower my monthly cost?">Lower cost</button>
+        <button type="button" data-chat-prompt="Compare roaming options">Roaming</button>
+        <button type="button" data-chat-prompt="Explain my current total">Total</button>
+      </div>
+      <div class="chat-input-row">
+        <input id="miraChatInput" type="text" placeholder="Ask Mira about Marcus's plan">
+        <button id="miraChatSend" type="button">Send</button>
+      </div>
+    </div>
+  </aside>
 
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <h1>Build a plan that fits Praveen.</h1>
+        <h1>Build a plan that fits Marcus.</h1>
       </div>
       <div class="profile-card">
         <h2>Customer context</h2>
@@ -969,7 +1246,7 @@
           <div class="mira-row">
             <div class="avatar" aria-hidden="true"></div>
             <div>
-              <strong>Hi Praveen.</strong>
+              <strong>Hi Marcus.</strong>
               <span>I'll help you build the right plan.</span>
               <span>I’ll help you build the right plan.</span>
             </div>
@@ -1009,7 +1286,7 @@
 
         <div class="panel builder-drop-panel">
           <div class="panel-header">
-            <h2>Praveen’s Plan Builder</h2>
+            <h2>Marcus’s Plan Builder</h2>
             <span>Drop modules here</span>
           </div>
           <div class="drop-zone" id="dropZone">
@@ -1048,13 +1325,13 @@
 
   <script>
     const modules = [
-      { id: 'data-100', type: 'data', icon: '100', title: '100GB Data', price: 8, desc: 'Best value starting point with plenty of buffer for Praveen’s 9GB monthly average.' },
+      { id: 'data-100', type: 'data', icon: '100', title: '100GB Data', price: 8, desc: 'Best value starting point with plenty of buffer for Marcus’s 9GB monthly average.' },
       { id: 'data-200', type: 'data', icon: '200', title: '200GB Data', price: 10, desc: 'Extra headroom for heavier hotspot, streaming and work usage.' },
       { id: 'data-500', type: 'data', icon: '500', title: '500GB Data', price: 12, desc: 'Maximum data confidence for power users at a small step-up in monthly cost.' },
       { id: 'roam-asia-5', type: 'roaming', icon: '5', title: 'Asia Roaming 5GB', price: 12, desc: 'Regional roaming for short trips across Malaysia, Thailand, Indonesia, Hong Kong and Japan.' },
       { id: 'roam-asia-12', type: 'roaming', icon: '12', title: 'Asia Roaming 12GB', price: 20, desc: 'More room for frequent Asia trips, maps, messaging, work and video calls.' },
       { id: 'roam-world-5', type: 'roaming', icon: '5', title: 'Worldwide Roaming 5GB', price: 24, desc: 'Worldwide roaming for light usage across long-haul travel destinations.' },
-      { id: 'roam-world-12', type: 'roaming', icon: '12', title: 'Worldwide Roaming 12GB', price: 38, desc: 'Recommended for Praveen’s frequent travel pattern and higher overseas data confidence.' },
+      { id: 'roam-world-12', type: 'roaming', icon: '12', title: 'Worldwide Roaming 12GB', price: 38, desc: 'Recommended for Marcus’s frequent travel pattern and higher overseas data confidence.' },
       { id: 'ent-basic', type: 'entertainment', icon: 'TV', title: 'Entertainment Lite', price: 18, desc: 'Includes Disney+, Netflix and Amazon Prime Video-style streaming access.' },
       { id: 'ent-premium', type: 'entertainment', icon: 'VIP', title: 'Entertainment Plus', price: 38, desc: 'Adds seasonal premium content such as FIFA, Euro Cup and other high-value subscription services.' },
       { id: 'contract-0', type: 'contract', icon: '0', title: '0-Month Contract', price: 0, desc: 'Maximum flexibility with no lock-in or monthly contract discount.' },
@@ -1131,9 +1408,17 @@
     const planTray = document.getElementById('planTray');
     const trayCount = document.getElementById('trayCount');
     const trayTotal = document.getElementById('trayTotal');
+    const assistantPanel = document.querySelector('.assistant-panel');
+    const miraChathead = document.getElementById('miraChathead');
+    const miraChat = document.getElementById('miraChat');
+    const miraChatClose = document.getElementById('miraChatClose');
+    const miraChatMessages = document.getElementById('miraChatMessages');
+    const miraChatInput = document.getElementById('miraChatInput');
+    const miraChatSend = document.getElementById('miraChatSend');
     let trayTimer = null;
     let adviceTimer = null;
     let currentAdvice = '';
+    let chatSeeded = false;
 
     function formatSgd(value) {
       return `S$${value.toLocaleString('en-SG')}`;
@@ -1143,11 +1428,25 @@
       return Math.max(0, phone.todayPrice - phone.tradeInOneYear);
     }
 
+    const basePlan = {
+      price: 8,
+      title: 'Base 5G mobile plan',
+      desc: 'Comes with 340GB of 5G data, 400 mins talktime, 400 SMS and Caller ID.'
+    };
+
     function calculateMonthlyTotal() {
-      const base = 28;
+      const base = basePlan.price;
       const moduleTotal = Array.from(selected.values()).reduce((sum, module) => sum + module.price, 0);
       const phoneTotal = selectedPhone ? selectedPhone.price : 0;
       return Math.max(0, base + moduleTotal + phoneTotal);
+    }
+
+    function selectedModules() {
+      return Array.from(selected.values());
+    }
+
+    function selectedOfType(type) {
+      return selectedModules().find(module => module.type === type);
     }
 
     function updatePlanTray() {
@@ -1199,6 +1498,108 @@
       }, 24);
     }
 
+    function addChatMessage(sender, text) {
+      const bubble = document.createElement('div');
+      bubble.className = `chat-message ${sender}`;
+      bubble.textContent = text;
+      miraChatMessages.appendChild(bubble);
+      miraChatMessages.scrollTop = miraChatMessages.scrollHeight;
+      return bubble;
+    }
+
+    function addTypingChatMessage(text) {
+      const bubble = addChatMessage('mira', '');
+      bubble.classList.add('typing');
+      let index = 0;
+      const timer = setInterval(() => {
+        bubble.textContent = text.slice(0, index + 1);
+        index += 1;
+        miraChatMessages.scrollTop = miraChatMessages.scrollHeight;
+
+        if (index >= text.length) {
+          clearInterval(timer);
+          bubble.classList.remove('typing');
+        }
+      }, 18);
+    }
+
+    function currentPlanText() {
+      const parts = [`${basePlan.title} ($${basePlan.price}/mth)`];
+      selectedModules().forEach(module => {
+        parts.push(`${module.title} (${module.price < 0 ? '-' : '+'}$${Math.abs(module.price)}/mth)`);
+      });
+      if (selectedPhone) parts.push(`${selectedPhone.title} (+$${selectedPhone.price}/mth)`);
+      return parts.join(', ');
+    }
+
+    function generateMiraReply(input) {
+      const text = input.toLowerCase();
+      const data = selectedOfType('data');
+      const roaming = selectedOfType('roaming');
+      const contract = selectedOfType('contract');
+      const entertainment = selectedOfType('entertainment');
+      const total = calculateMonthlyTotal();
+
+      if (text.includes('lower') || text.includes('cheaper') || text.includes('save') || text.includes('cost')) {
+        if (!contract || contract.id !== 'contract-24') {
+          return 'To lower Marcus’s monthly bill, the biggest immediate lever is contract length. A 24-month contract gives the highest discount at -$12/mth. If he wants flexibility, 12 months is the softer middle ground at -$6/mth.';
+        }
+        if (roaming && roaming.id === 'roam-world-12') {
+          return 'Marcus can reduce cost by switching from Worldwide Roaming 12GB to Worldwide Roaming 5GB if his trips are shorter, or Asia Roaming 12GB if most travel stays regional.';
+        }
+        if (entertainment) {
+          return 'Entertainment is optional. Removing it or choosing Entertainment Lite keeps the core mobile plan strong while trimming the monthly total.';
+        }
+        return 'Marcus is already in a lean setup. The base plan is $8/mth, so most savings now come from choosing a cheaper phone or a longer contract discount.';
+      }
+
+      if (text.includes('why') || text.includes('recommend')) {
+        return `This is recommended because Marcus averages 9GB locally, travels 16 times a year, and cares about roaming value. Current build: ${currentPlanText()}. Estimated monthly bill: $${total}/mth.`;
+      }
+
+      if (text.includes('roam') || text.includes('travel')) {
+        if (!roaming) return 'For Marcus, I would start with Worldwide Roaming 12GB because he travels frequently. If most trips are regional, Asia Roaming 12GB is the better value option.';
+        return `${roaming.title} is selected. It fits if Marcus’s travel pattern matches the coverage. For high-frequency mixed-region travel, Worldwide 12GB is strongest; for regional trips, Asia 12GB gives better value.`;
+      }
+
+      if (text.includes('phone') || text.includes('device') || text.includes('trade')) {
+        if (!selectedPhone) return 'Marcus has not selected a phone yet. Once he drags one in, I can compare monthly device cost, retail price, and price after trade-in in 1 year.';
+        return `${selectedPhone.title} is selected at +$${selectedPhone.price}/mth. Retail today is ${formatSgd(selectedPhone.todayPrice)}, and price after trade-in in 1 year is ${formatSgd(priceAfterTradeIn(selectedPhone))}.`;
+      }
+
+      if (text.includes('contract')) {
+        if (!contract) return 'Marcus has not chosen a contract yet. 0 months gives flexibility, while 12, 18 and 24 months unlock progressively higher discounts.';
+        return `${contract.title} is selected. ${contract.desc} Longer contracts reduce monthly bill, but Marcus gives up flexibility.`;
+      }
+
+      if (text.includes('total') || text.includes('bill') || text.includes('summary')) {
+        return `Marcus’s estimated monthly bill is $${total}/mth. It includes ${currentPlanText()}.`;
+      }
+
+      if (!data) return 'I’d start by choosing a data plan. Based on Marcus’s 9GB monthly average, 100GB Data gives a strong value buffer.';
+      if (!roaming) return 'Next, add roaming. Marcus travels often, so Worldwide 12GB is the strongest fit, while Asia 12GB is a good value alternative.';
+      if (!contract) return 'Next, choose a contract length. 12 months is a balanced option; 24 months gives the highest monthly discount.';
+      if (!selectedPhone) return 'Now choose a phone so I can show Marcus the full monthly cost and the price after trade-in in 1 year.';
+      return `This plan is ready to review. Marcus’s estimated monthly bill is $${total}/mth, and the selected modules are grounded in his usage and travel profile.`;
+    }
+
+    function openMiraChat() {
+      miraChat.classList.add('open');
+      if (!chatSeeded) {
+        addTypingChatMessage('Hi Marcus, I can explain this plan, compare options, or help reduce the monthly cost as you build.');
+        chatSeeded = true;
+      }
+      miraChatInput.focus();
+    }
+
+    function sendMiraChat(prompt) {
+      const message = (prompt || miraChatInput.value).trim();
+      if (!message) return;
+      addChatMessage('user', message);
+      miraChatInput.value = '';
+      setTimeout(() => addTypingChatMessage(generateMiraReply(message)), 260);
+    }
+
     function renderTabs() {
       moduleTabs.innerHTML = '';
       Object.entries(typeLabels).forEach(([type, label]) => {
@@ -1229,7 +1630,8 @@
               <div class="module-price">${module.price < 0 ? '-' : '+'}$${Math.abs(module.price)}</div>
             </div>
             <h3>${module.title}</h3>
-            <p>${module.desc}</p>
+            <button class="module-info" type="button" aria-label="More information about ${module.title}">i</button>
+            <div class="module-tooltip" role="tooltip">${module.desc}</div>
           `;
           card.addEventListener('dragstart', event => {
             event.dataTransfer.setData('text/plain', module.id);
@@ -1239,6 +1641,15 @@
             hidePlanTraySoon();
           });
           card.addEventListener('click', () => addModule(module.id));
+          const infoButton = card.querySelector('.module-info');
+          infoButton.addEventListener('click', event => {
+            event.stopPropagation();
+            event.preventDefault();
+            document.querySelectorAll('.module-info.open').forEach(button => {
+              if (button !== infoButton) button.classList.remove('open');
+            });
+            infoButton.classList.toggle('open');
+          });
           moduleLibrary.appendChild(card);
         });
     }
@@ -1279,6 +1690,11 @@
         phoneCatalog.appendChild(card);
       });
     }
+
+    document.addEventListener('click', event => {
+      if (event.target.closest('.module-info')) return;
+      document.querySelectorAll('.module-info.open').forEach(button => button.classList.remove('open'));
+    });
 
     function addModule(id) {
       const module = modules.find(item => item.id === id);
@@ -1370,7 +1786,7 @@
     }
 
     function renderSummary() {
-      const base = 28;
+      const base = basePlan.price;
       const modulesSelected = Array.from(selected.values());
       const phoneTotal = selectedPhone ? selectedPhone.price : 0;
       const moduleTotal = modulesSelected.reduce((sum, module) => sum + module.price, 0);
@@ -1379,7 +1795,7 @@
 
       totalPrice.textContent = `$${totalWithPhone}`;
       breakdown.innerHTML = `
-        <div class="line-item"><span>Base mobile access</span><strong>$${base}</strong></div>
+        <div class="line-item"><span>${basePlan.title}<small>${basePlan.desc}</small></span><strong>$${base}</strong></div>
         ${selectedPhone ? `<div class="line-item"><span>${selectedPhone.title}<small>Retail ${formatSgd(selectedPhone.todayPrice)} | Price after trade-in in 1 year ${formatSgd(priceAfterTradeIn(selectedPhone))}</small></span><strong>$${selectedPhone.price}</strong></div>` : ''}
         ${modulesSelected.map(module => `
           <div class="line-item"><span>${module.title}</span><strong>${module.price < 0 ? '-' : ''}$${Math.abs(module.price)}</strong></div>
@@ -1399,11 +1815,11 @@
         return;
       }
       if (!Array.from(selected.values()).some(module => module.type === 'data')) {
-        miraAdvice.textContent = 'You have not chosen a data module yet. Based on Praveen’s 9GB monthly average, 100GB Data gives the best value buffer.';
+        miraAdvice.textContent = 'You have not chosen a data module yet. Based on Marcus’s 9GB monthly average, 100GB Data gives the best value buffer.';
         return;
       }
       if (!Array.from(selected.values()).some(module => module.type === 'roaming')) {
-        miraAdvice.textContent = 'Good. Next, add a roaming module. Since Praveen travels often, Worldwide 12GB Roaming is the strongest fit.';
+        miraAdvice.textContent = 'Good. Next, add a roaming module. Since Marcus travels often, Worldwide 12GB Roaming is the strongest fit.';
         return;
       }
       if (!Array.from(selected.values()).some(module => module.type === 'contract')) {
@@ -1422,9 +1838,9 @@
       if (!selected.size) {
         advice = 'Start with data, then add roaming because your travel history shows frequent overseas usage. I’ll update the estimate as you build.';
       } else if (!Array.from(selected.values()).some(module => module.type === 'data')) {
-        advice = 'You have not chosen a data module yet. Based on Praveen’s 9GB monthly average, 100GB Data gives the best value buffer.';
+        advice = 'You have not chosen a data module yet. Based on Marcus’s 9GB monthly average, 100GB Data gives the best value buffer.';
       } else if (!Array.from(selected.values()).some(module => module.type === 'roaming')) {
-        advice = 'Good. Next, add a roaming module. Since Praveen travels often, Worldwide 12GB Roaming is the strongest fit.';
+        advice = 'Good. Next, add a roaming module. Since Marcus travels often, Worldwide 12GB Roaming is the strongest fit.';
       } else if (!Array.from(selected.values()).some(module => module.type === 'contract')) {
         advice = 'The plan is taking shape. Choose a contract length now: 0 months for flexibility, or 12, 18, and 24 months for progressively higher monthly discounts.';
       } else if (!selectedPhone) {
@@ -1490,6 +1906,23 @@
     document.getElementById('checkoutBtn').addEventListener('click', () => {
       typeMiraAdvice('Great. I’ll carry this modular plan into checkout with a full monthly cost summary.');
     });
+
+    miraChathead.addEventListener('click', openMiraChat);
+    miraChatClose.addEventListener('click', () => miraChat.classList.remove('open'));
+    miraChatSend.addEventListener('click', () => sendMiraChat());
+    miraChatInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') sendMiraChat();
+    });
+    document.querySelectorAll('[data-chat-prompt]').forEach(button => {
+      button.addEventListener('click', () => sendMiraChat(button.dataset.chatPrompt));
+    });
+
+    const assistantObserver = new IntersectionObserver(entries => {
+      const entry = entries[0];
+      miraChathead.classList.toggle('visible', !entry.isIntersecting);
+      if (entry.isIntersecting) miraChat.classList.remove('open');
+    }, { threshold: 0.18 });
+    assistantObserver.observe(assistantPanel);
 
     renderTabs();
     renderAll();
