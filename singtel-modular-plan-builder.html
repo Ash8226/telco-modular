@@ -467,14 +467,63 @@
       align-content: end;
       min-height: 100%;
       padding: 20px;
-      background:
-        linear-gradient(180deg, rgba(23, 32, 42, 0) 40%, rgba(23, 32, 42, .72) 100%),
-        url("mira-ultra-realistic-avatar.png") center 24% / cover no-repeat;
+      background: #111820;
       color: white;
+      position: relative;
+      overflow: hidden;
     }
 
     .avatar {
       display: none;
+    }
+
+    .mira-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 24%;
+      z-index: 0;
+    }
+
+    .mira-audio-toggle {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.74);
+      background: rgba(0,0,0,.44);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.2);
+      backdrop-filter: blur(8px);
+    }
+
+    .mira-audio-toggle:hover {
+      background: rgba(243, 11, 53, .88);
+      border-color: rgba(243, 11, 53, .88);
+    }
+
+    .mira-row:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(23, 32, 42, .08) 34%, rgba(23, 32, 42, .82) 100%);
+      pointer-events: none;
+    }
+
+    .mira-copy {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      align-content: end;
     }
 
     .mira-row strong {
@@ -492,6 +541,34 @@
 
     .mira-row span + span {
       display: none;
+    }
+
+    .mira-copy .mira-subtitle + span {
+      display: none;
+    }
+
+    .mira-subtitle {
+      position: relative;
+      z-index: 2;
+      margin-top: 12px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, .62);
+      color: white;
+      padding: 9px 11px;
+      font-size: 12px;
+      line-height: 1.35;
+      box-shadow: 0 8px 20px rgba(0,0,0,.22);
+    }
+
+    .mira-subtitle.typing:after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      margin-left: 3px;
+      vertical-align: -2px;
+      background: white;
+      animation: cursorBlink .78s steps(1) infinite;
     }
 
     .mira-guidance {
@@ -1244,10 +1321,13 @@
         </div>
         <div class="assistant-body">
           <div class="mira-row">
+            <video class="mira-video" id="miraPanelVideo" autoplay playsinline poster="mira-ultra-realistic-avatar.png">
+              <source src="mira-singtel-compressed.mp4" type="video/mp4">
+            </video>
+            <button class="mira-audio-toggle" id="miraAudioToggle" type="button" aria-label="Mute Mira">🔊</button>
             <div class="avatar" aria-hidden="true"></div>
-            <div>
-              <strong>Hi Marcus.</strong>
-              <span>I'll help you build the right plan.</span>
+            <div class="mira-copy">
+              <div class="mira-subtitle" id="miraSubtitle">Hi Marcus, I'll help you build the right plan.</div>
               <span>I’ll help you build the right plan.</span>
             </div>
           </div>
@@ -1405,6 +1485,9 @@
     const fitScore = document.getElementById('fitScore');
     const fitBar = document.getElementById('fitBar');
     const miraAdvice = document.getElementById('miraAdvice');
+    const miraSubtitle = document.getElementById('miraSubtitle');
+    const miraPanelVideo = document.getElementById('miraPanelVideo');
+    const miraAudioToggle = document.getElementById('miraAudioToggle');
     const planTray = document.getElementById('planTray');
     const trayCount = document.getElementById('trayCount');
     const trayTotal = document.getElementById('trayTotal');
@@ -1417,8 +1500,16 @@
     const miraChatSend = document.getElementById('miraChatSend');
     let trayTimer = null;
     let adviceTimer = null;
+    let subtitleTimer = null;
     let currentAdvice = '';
     let chatSeeded = false;
+    const miraVideoScript = [
+      "Hi Marcus, I'll help you build the right plan.",
+      "First, select your data plan, then add roaming because your travel history shows frequent overseas usage.",
+      "Drag the modules into the floating tray.",
+      "I'll estimate the price."
+    ];
+    let activeSubtitleCue = -1;
 
     function formatSgd(value) {
       return `S$${value.toLocaleString('en-SG')}`;
@@ -1481,6 +1572,7 @@
       if (message === currentAdvice && miraAdvice.textContent) return;
 
       currentAdvice = message;
+      updateMiraSubtitle(message);
       clearInterval(adviceTimer);
       miraAdvice.textContent = '';
       miraAdvice.classList.add('typing');
@@ -1498,6 +1590,62 @@
       }, 24);
     }
 
+    function updateMiraSubtitle(text, durationMs) {
+      if (!miraSubtitle) return;
+      clearInterval(subtitleTimer);
+      miraSubtitle.textContent = '';
+      miraSubtitle.classList.add('typing');
+
+      let index = 0;
+      const interval = durationMs
+        ? Math.max(18, Math.min(120, durationMs / Math.max(text.length, 1)))
+        : 20;
+      subtitleTimer = setInterval(() => {
+        miraSubtitle.textContent = text.slice(0, index + 1);
+        index += 1;
+
+        if (index >= text.length) {
+          clearInterval(subtitleTimer);
+          subtitleTimer = null;
+          miraSubtitle.classList.remove('typing');
+        }
+      }, interval);
+    }
+
+    function videoSubtitleCues() {
+      const duration = Number.isFinite(miraPanelVideo.duration) && miraPanelVideo.duration > 0
+        ? miraPanelVideo.duration
+        : miraVideoScript.length * 3;
+      const totalWeight = miraVideoScript.reduce((sum, line) => sum + Math.max(line.length, 32), 0);
+      let cursor = 0;
+
+      return miraVideoScript.map(line => {
+        const cueDuration = duration * (Math.max(line.length, 32) / totalWeight);
+        const cue = {
+          start: cursor,
+          end: Math.min(duration, cursor + cueDuration),
+          line
+        };
+        cursor += cueDuration;
+        return cue;
+      });
+    }
+
+    function syncVideoSubtitle() {
+      const cues = videoSubtitleCues();
+      const cueIndex = cues.findIndex(cue => miraPanelVideo.currentTime >= cue.start && miraPanelVideo.currentTime < cue.end);
+      if (cueIndex < 0 || cueIndex === activeSubtitleCue) return;
+
+      activeSubtitleCue = cueIndex;
+      const cue = cues[cueIndex];
+      updateMiraSubtitle(cue.line, Math.max(900, (cue.end - cue.start) * 1000));
+    }
+
+    function updateAudioButton() {
+      miraAudioToggle.textContent = miraPanelVideo.muted ? '🔇' : '🔊';
+      miraAudioToggle.setAttribute('aria-label', miraPanelVideo.muted ? 'Unmute Mira' : 'Mute Mira');
+    }
+
     function addChatMessage(sender, text) {
       const bubble = document.createElement('div');
       bubble.className = `chat-message ${sender}`;
@@ -1508,6 +1656,7 @@
     }
 
     function addTypingChatMessage(text) {
+      updateMiraSubtitle(text);
       const bubble = addChatMessage('mira', '');
       bubble.classList.add('typing');
       let index = 0;
@@ -1837,6 +1986,12 @@
       let advice = '';
       if (!selected.size) {
         advice = 'Start with data, then add roaming because your travel history shows frequent overseas usage. I’ll update the estimate as you build.';
+        clearInterval(adviceTimer);
+        adviceTimer = null;
+        currentAdvice = advice;
+        miraAdvice.classList.remove('typing');
+        miraAdvice.textContent = advice;
+        return;
       } else if (!Array.from(selected.values()).some(module => module.type === 'data')) {
         advice = 'You have not chosen a data module yet. Based on Marcus’s 9GB monthly average, 100GB Data gives the best value buffer.';
       } else if (!Array.from(selected.values()).some(module => module.type === 'roaming')) {
@@ -1915,6 +2070,53 @@
     });
     document.querySelectorAll('[data-chat-prompt]').forEach(button => {
       button.addEventListener('click', () => sendMiraChat(button.dataset.chatPrompt));
+    });
+
+    miraPanelVideo.addEventListener('loadedmetadata', () => {
+      miraPanelVideo.loop = false;
+      miraPanelVideo.muted = false;
+      miraPanelVideo.currentTime = 0;
+      activeSubtitleCue = -1;
+      updateAudioButton();
+      syncVideoSubtitle();
+      miraPanelVideo.play().catch(() => {
+        miraPanelVideo.muted = true;
+        updateAudioButton();
+        miraPanelVideo.play().catch(() => {});
+      });
+    });
+
+    miraPanelVideo.addEventListener('play', () => {
+      if (miraPanelVideo.currentTime < 0.25) {
+        activeSubtitleCue = -1;
+        syncVideoSubtitle();
+      }
+    });
+
+    miraPanelVideo.addEventListener('timeupdate', syncVideoSubtitle);
+
+    miraPanelVideo.addEventListener('seeking', () => {
+      activeSubtitleCue = -1;
+      syncVideoSubtitle();
+    });
+
+    miraPanelVideo.addEventListener('ended', () => {
+      clearInterval(subtitleTimer);
+      subtitleTimer = null;
+      miraSubtitle.classList.remove('typing');
+      miraSubtitle.textContent = miraVideoScript[miraVideoScript.length - 1];
+    });
+
+    miraAudioToggle.addEventListener('click', event => {
+      event.stopPropagation();
+      miraPanelVideo.muted = !miraPanelVideo.muted;
+      updateAudioButton();
+      if (miraPanelVideo.paused && miraPanelVideo.ended) {
+        miraPanelVideo.currentTime = 0;
+        activeSubtitleCue = -1;
+        syncVideoSubtitle();
+        miraPanelVideo.play().catch(() => {});
+      }
     });
 
     const assistantObserver = new IntersectionObserver(entries => {
